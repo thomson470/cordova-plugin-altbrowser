@@ -629,8 +629,8 @@ static CDVWKAltBrowser* instance = nil;
 
 @synthesize currentURL;
 
-CGFloat lastReducedStatusBarHeight = 0.0;
-BOOL isExiting = FALSE;
+CGFloat lastReducedStatusBarHeightAlt = 0.0;
+BOOL isExitingAlt = FALSE;
 
 - (id)initWithBrowserOptions: (CDVAltBrowserOptions*) browserOptions andSettings:(NSDictionary *)settings
 {
@@ -997,9 +997,9 @@ BOOL isExiting = FALSE;
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    if (isExiting && (self.navigationDelegate != nil) && [self.navigationDelegate respondsToSelector:@selector(browserExit)]) {
+    if (isExitingAlt && (self.navigationDelegate != nil) && [self.navigationDelegate respondsToSelector:@selector(browserExit)]) {
         [self.navigationDelegate browserExit];
-        isExiting = FALSE;
+        isExitingAlt = FALSE;
     }
 }
 
@@ -1031,8 +1031,8 @@ BOOL isExiting = FALSE;
     
     // Run later to avoid the "took a long time" log message.
     dispatch_async(dispatch_get_main_queue(), ^{
-        isExiting = TRUE;
-        lastReducedStatusBarHeight = 0.0;
+        isExitingAlt = TRUE;
+        lastReducedStatusBarHeightAlt = 0.0;
         if ([weakSelf respondsToSelector:@selector(presentingViewController)]) {
             [[weakSelf presentingViewController] dismissViewControllerAnimated:YES completion:nil];
         } else {
@@ -1081,8 +1081,8 @@ BOOL isExiting = FALSE;
     viewBounds.origin.y = statusBarHeight;
     
     // account for web view height portion that may have been reduced by a previous call to this method
-    viewBounds.size.height = viewBounds.size.height - statusBarHeight + lastReducedStatusBarHeight;
-    lastReducedStatusBarHeight = statusBarHeight;
+    viewBounds.size.height = viewBounds.size.height - statusBarHeight + lastReducedStatusBarHeightAlt;
+    lastReducedStatusBarHeightAlt = statusBarHeight;
     
     if ((_browserOptions.toolbar) && ([_browserOptions.toolbarposition isEqualToString:kAltBrowserToolbarBarPositionTop])) {
         // if we have to display the toolbar on top of the web view, we need to account for its height
@@ -1217,7 +1217,7 @@ BOOL isExiting = FALSE;
 #pragma mark UIAdaptivePresentationControllerDelegate
 
 - (void)presentationControllerWillDismiss:(UIPresentationController *)presentationController {
-    isExiting = TRUE;
+    isExitingAlt = TRUE;
 }
 
 @end //CDVWKAltBrowserViewController
